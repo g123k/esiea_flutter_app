@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:untitled5/res/app_images.dart';
 
 class ProductPage extends StatelessWidget {
   const ProductPage({super.key});
@@ -68,6 +69,7 @@ class ProductPage extends StatelessWidget {
                     'Cassegrain',
                     style: theme.textTheme.displayMedium,
                   ),
+                  const ProductScores(),
                 ],
               ),
             ),
@@ -75,5 +77,60 @@ class ProductPage extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+class ProductScores extends StatelessWidget {
+  const ProductScores({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Column(
+      children: [
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ProductNutriscore(),
+            VerticalDivider(),
+            ProductNovaScore(),
+          ],
+        ),
+        Divider(),
+        ProductEcoScore(),
+      ],
+    );
+  }
+}
+
+class ProductNutriscore extends StatelessWidget {
+  const ProductNutriscore({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text('Nutri-Score'),
+        Image.asset(AppImages.nutriscoreA),
+      ],
+    );
+  }
+}
+
+class ProductNovaScore extends StatelessWidget {
+  const ProductNovaScore({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Column();
+  }
+}
+
+class ProductEcoScore extends StatelessWidget {
+  const ProductEcoScore({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Column();
   }
 }
