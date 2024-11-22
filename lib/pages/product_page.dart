@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:untitled5/res/app_colors.dart';
+import 'package:untitled5/res/app_icons.dart';
 import 'package:untitled5/res/app_images.dart';
 
 class ProductPage extends StatelessWidget {
@@ -69,6 +71,7 @@ class ProductPage extends StatelessWidget {
                     'Cassegrain',
                     style: theme.textTheme.displayMedium,
                   ),
+                  const SizedBox(height: 20.0),
                   const ProductScores(),
                 ],
               ),
@@ -87,13 +90,21 @@ class ProductScores extends StatelessWidget {
   Widget build(BuildContext context) {
     return const Column(
       children: [
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            ProductNutriscore(),
-            VerticalDivider(),
-            ProductNovaScore(),
-          ],
+        IntrinsicHeight(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                flex: 44,
+                child: ProductNutriscore(),
+              ),
+              VerticalDivider(width: 1.0),
+              Expanded(
+                flex: 66,
+                child: ProductNovaScore(),
+              ),
+            ],
+          ),
         ),
         Divider(),
         ProductEcoScore(),
@@ -110,8 +121,14 @@ class ProductNutriscore extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('Nutri-Score'),
-        Image.asset(AppImages.nutriscoreA),
+        Text(
+          'Nutri-Score',
+          style: Theme.of(context).textTheme.titleSmall,
+        ),
+        FractionallySizedBox(
+          widthFactor: 0.8,
+          child: Image.asset(AppImages.nutriscoreA),
+        ),
       ],
     );
   }
@@ -122,7 +139,16 @@ class ProductNovaScore extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Column();
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Groupe NOVA',
+          style: Theme.of(context).textTheme.titleSmall,
+        ),
+        const Text('Produits alimentaires et boissons ultra-transformés'),
+      ],
+    );
   }
 }
 
@@ -131,6 +157,24 @@ class ProductEcoScore extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Column();
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'EcoScore',
+          style: Theme.of(context).textTheme.titleSmall,
+        ),
+        const Row(
+          children: [
+            Icon(
+              AppIcons.ecoscore_d,
+              color: AppColors.ecoScoreD,
+            ),
+            SizedBox(width: 10.0),
+            Expanded(child: Text('Impact environnemental élevé')),
+          ],
+        )
+      ],
+    );
   }
 }

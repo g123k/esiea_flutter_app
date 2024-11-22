@@ -20,16 +20,22 @@ class MyApp extends StatelessWidget {
           seedColor: AppColors.blue,
         ),
         textTheme: const TextTheme(
-            titleMedium: TextStyle(
-              color: AppColors.blue,
-              fontSize: 20.0,
-              fontWeight: FontWeight.bold,
-            ),
-            displayMedium: TextStyle(
-              color: AppColors.gray2,
-              fontSize: 18.0,
-            ),
-            titleSmall: TextStyle()),
+          titleMedium: TextStyle(
+            color: AppColors.blue,
+            fontSize: 20.0,
+            fontWeight: FontWeight.bold,
+          ),
+          displayMedium: TextStyle(
+            color: AppColors.gray2,
+            fontSize: 18.0,
+          ),
+          titleSmall: TextStyle(
+            color: AppColors.blue,
+            fontSize: 16.0,
+            fontWeight: FontWeight.bold,
+            height: 2.0,
+          ),
+        ),
         useMaterial3: true,
       ),
       home: const ProductPage(),
