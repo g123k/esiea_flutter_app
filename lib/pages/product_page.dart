@@ -73,6 +73,31 @@ class ProductPage extends StatelessWidget {
                   ),
                   const SizedBox(height: 20.0),
                   const ProductScores(),
+                  const ProductDescription(
+                    label: 'Quantité',
+                    value: '200g',
+                  ),
+                  const ProductDescription(
+                    label: 'Vendu',
+                    value: 'France, Allemagne',
+                    divider: false,
+                  ),
+                  const Row(
+                    children: [
+                      Expanded(
+                        child: ProductToggle(
+                          label: 'Végétalien',
+                          value: ProductInfoToggle.on,
+                        ),
+                      ),
+                      Expanded(
+                        child: ProductToggle(
+                          label: 'Végatarien',
+                          value: ProductInfoToggle.off,
+                        ),
+                      ),
+                    ],
+                  )
                 ],
               ),
             ),
@@ -178,3 +203,71 @@ class ProductEcoScore extends StatelessWidget {
     );
   }
 }
+
+class ProductDescription extends StatelessWidget {
+  const ProductDescription({
+    required this.label,
+    required this.value,
+    this.divider = true,
+    super.key,
+  });
+
+  final String label;
+  final String value;
+  final bool divider;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Row(
+          children: [
+            Expanded(child: Text(label)),
+            Expanded(
+                child: Text(
+              value,
+              textAlign: TextAlign.end,
+            )),
+          ],
+        ),
+        if (divider) const Divider(),
+      ],
+    );
+  }
+}
+
+class ProductToggle extends StatelessWidget {
+  const ProductToggle({
+    super.key,
+    required this.label,
+    required this.value,
+  });
+
+  final String label;
+  final ProductInfoToggle value;
+
+  @override
+  Widget build(BuildContext context) {
+    return DecoratedBox(
+      decoration: const BoxDecoration(
+        color: AppColors.blueLight,
+        borderRadius: BorderRadius.all(
+          Radius.circular(20.0),
+        ),
+      ),
+      child: Row(
+        children: [
+          Icon(icon),
+          Text(label),
+        ],
+      ),
+    );
+  }
+
+  IconData get icon => switch (value) {
+        ProductInfoToggle.on => AppIcons.checkmark,
+        ProductInfoToggle.off => AppIcons.close,
+      };
+}
+
+enum ProductInfoToggle { on, off }
