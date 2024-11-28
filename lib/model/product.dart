@@ -104,10 +104,10 @@ Product generateProduct() => Product(
       altName: 'Product Alt Name',
       picture:
           'https://images.openfoodfacts.org/images/products/301/762/042/5035/front_fr.533.400.jpg',
-      quantity: '100g',
+      quantity: '200g',
       brands: ['Brand 1', 'Brand 2'],
       manufacturingCountries: ['Country 1', 'Country 2'],
-      nutriScore: ProductNutriscore.E,
+      nutriScore: ProductNutriscore.B,
       novaScore: ProductNovaScore.Group4,
       ecoScore: ProductEcoScore.D,
       ingredients: ['Ingredient 1', 'Ingredient 2'],

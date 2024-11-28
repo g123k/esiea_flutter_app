@@ -5,22 +5,45 @@ import 'package:untitled5/res/app_icons.dart';
 import 'package:untitled5/res/app_images.dart';
 
 class ProductPage extends StatefulWidget {
-  static const double kImageHeight = 300.0;
-
   const ProductPage({super.key});
 
   @override
   State<ProductPage> createState() => _ProductPageState();
 }
 
+class _ProductPageState extends State<ProductPage> {
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: <Widget>[
+        // TODO Changer dynamique de page
+        const Expanded(
+          child: ProductPageTab0(),
+        ),
+        // TODO Ajouter la NavigationBar
+        // NavigationBar(destinations: destinations)
+      ],
+    );
+  }
+}
+
+class ProductPageTab0 extends StatefulWidget {
+  static const double kImageHeight = 300.0;
+
+  const ProductPageTab0({super.key});
+
+  @override
+  State<ProductPageTab0> createState() => _ProductPageTab0State();
+}
+
 double _scrollProgress(BuildContext context) {
   ScrollController? controller = PrimaryScrollController.of(context);
   return !controller.hasClients
       ? 0
-      : (controller.position.pixels / ProductPage.kImageHeight).clamp(0, 1);
+      : (controller.position.pixels / ProductPageTab0.kImageHeight).clamp(0, 1);
 }
 
-class _ProductPageState extends State<ProductPage> {
+class _ProductPageTab0State extends State<ProductPageTab0> {
   double _currentScrollProgress = 0.0;
 
   // Quand on scroll, on redraw pour changer la couleur de l'image
@@ -37,25 +60,25 @@ class _ProductPageState extends State<ProductPage> {
     final ScrollController scrollController =
         PrimaryScrollController.of(context);
 
-    /// TODO : Remplacer les chaines de caractères en dur par cet objet
-    Product product = generateProduct();
-
-    return Material(
-      child: NotificationListener<ScrollNotification>(
-        onNotification: (ScrollNotification notification) {
-          _onScroll();
-          return false;
-        },
+    return NotificationListener<ScrollNotification>(
+      onNotification: (ScrollNotification notification) {
+        _onScroll();
+        return false;
+      },
+      child: ProductContainer(
+        product: generateProduct(),
         child: Stack(children: [
-          Image.network(
-            product.picture!,
-            width: double.infinity,
-            height: ProductPage.kImageHeight,
-            cacheHeight: (ProductPage.kImageHeight * 3).toInt(),
-            fit: BoxFit.cover,
-            color: Colors.black.withOpacity(_currentScrollProgress),
-            colorBlendMode: BlendMode.srcATop,
-          ),
+          Builder(builder: (BuildContext context) {
+            return Image.network(
+              ProductContainer.of(context).product.picture!,
+              width: double.infinity,
+              height: ProductPageTab0.kImageHeight,
+              cacheHeight: (ProductPageTab0.kImageHeight * 3).toInt(),
+              fit: BoxFit.cover,
+              color: Colors.black.withOpacity(_currentScrollProgress),
+              colorBlendMode: BlendMode.srcATop,
+            );
+          }),
           Positioned.fill(
             child: SingleChildScrollView(
               controller: scrollController,
@@ -64,7 +87,7 @@ class _ProductPageState extends State<ProductPage> {
                 trackVisibility: true,
                 child: Container(
                   margin: const EdgeInsetsDirectional.only(
-                    top: ProductPage.kImageHeight - 30.0,
+                    top: ProductPageTab0.kImageHeight - 30.0,
                   ),
                   child: const _Body(),
                 ),
@@ -191,20 +214,21 @@ class _Header extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final TextTheme textTheme = Theme.of(context).textTheme;
+    final Product product = ProductContainer.of(context).product;
 
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Petits pois et carottes',
+          product.name!,
           style: textTheme.displayLarge,
         ),
         const SizedBox(
           height: 3.0,
         ),
         Text(
-          'Cassegrain',
+          product.brands!.join(', '),
           style: textTheme.displayMedium,
         ),
         const SizedBox(
@@ -223,6 +247,8 @@ class _Scores extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final Product product = ProductContainer.of(context).product;
+
     return Container(
       color: AppColors.gray1,
       width: double.infinity,
@@ -235,14 +261,14 @@ class _Scores extends StatelessWidget {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Expanded(
+              Expanded(
                 flex: 44,
                 child: Align(
                   alignment: Alignment.centerLeft,
                   child: Padding(
-                    padding: EdgeInsetsDirectional.only(end: 5.0),
+                    padding: const EdgeInsetsDirectional.only(end: 5.0),
                     child: _Nutriscore(
-                      nutriscore: ProductNutriscore.A,
+                      nutriscore: product.nutriScore!,
                     ),
                   ),
                 ),
@@ -252,14 +278,14 @@ class _Scores extends StatelessWidget {
                 height: 100.0,
                 color: Theme.of(context).dividerColor,
               ),
-              const Expanded(
+              Expanded(
                 flex: 66,
                 child: Align(
                   alignment: Alignment.centerLeft,
                   child: Padding(
-                    padding: EdgeInsetsDirectional.only(start: 25.0),
+                    padding: const EdgeInsetsDirectional.only(start: 25.0),
                     child: _NovaGroup(
-                      novaScore: ProductNovaScore.Group1,
+                      novaScore: product.novaScore!,
                     ),
                   ),
                 ),
@@ -270,13 +296,13 @@ class _Scores extends StatelessWidget {
         const Divider(
           height: 1.0,
         ),
-        const Padding(
-          padding: EdgeInsets.symmetric(
+        Padding(
+          padding: const EdgeInsets.symmetric(
             vertical: _verticalPadding,
             horizontal: _horizontalPadding,
           ),
           child: _EcoScore(
-            ecoScore: ProductEcoScore.D,
+            ecoScore: product.ecoScore!,
           ),
         ),
       ]),
@@ -474,22 +500,24 @@ class _Info extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Column(
+    final Product product = ProductContainer.of(context).product;
+
+    return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         _ProductItemValue(
           label: 'Quantité',
-          value: '200g (égoutté 130g)',
+          value: product.quantity ?? '-',
         ),
         _ProductItemValue(
           label: 'Vendu',
-          value: 'France',
+          value: product.manufacturingCountries?.join(', ') ?? '-',
           includeDivider: false,
         ),
-        SizedBox(
+        const SizedBox(
           height: 15.0,
         ),
-        Row(
+        const Row(
           children: [
             Expanded(
               flex: 40,
@@ -603,3 +631,64 @@ class _ProductBubble extends StatelessWidget {
 }
 
 enum _ProductBubbleValue { on, off }
+
+class ProductContainer extends InheritedWidget {
+  const ProductContainer({
+    super.key,
+    required this.product,
+    required super.child,
+  });
+
+  final Product product;
+
+  static ProductContainer of(BuildContext context) {
+    final ProductContainer? result =
+        context.dependOnInheritedWidgetOfExactType<ProductContainer>();
+    assert(result != null, 'No ProductContainer found in context');
+    return result!;
+  }
+
+  @override
+  bool updateShouldNotify(ProductContainer oldWidget) {
+    return product != oldWidget.product;
+  }
+}
+
+class ProductPageTab1 extends StatelessWidget {
+  const ProductPageTab1({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: Text('Caractéristiques'),
+      ),
+    );
+  }
+}
+
+class ProductPageTab2 extends StatelessWidget {
+  const ProductPageTab2({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: Text('Nutrition'),
+      ),
+    );
+  }
+}
+
+class ProductPageTab3 extends StatelessWidget {
+  const ProductPageTab3({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: Text('Tableau'),
+      ),
+    );
+  }
+}
