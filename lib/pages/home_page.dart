@@ -30,24 +30,24 @@ class Homepage extends StatelessWidget {
         child: Center(
           child: Column(
             children: [
-              Expanded(
-                flex: 2,
-                child: Container(width: 100, color: Colors.red),
-              ),
+              const Spacer(flex: 2),
               SvgPicture.asset(AppVectorialImages.illEmpty),
-              Spacer(flex: 3),
+              const Spacer(flex: 3),
               const Text(
                 'Vous n\'avez pas encore scanné de produit',
                 textAlign: TextAlign.center,
               ),
-              Spacer(flex: 1),
+              const Spacer(flex: 1),
               TextButton(
                 onPressed: () {},
                 style: OutlinedButton.styleFrom(
                   foregroundColor: AppColors.blue,
                   backgroundColor: AppColors.yellow,
                   shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(22.0))),
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(22.0),
+                    ),
+                  ),
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
@@ -58,7 +58,7 @@ class Homepage extends StatelessWidget {
                   ],
                 ),
               ),
-              Spacer(flex: 2),
+              const Spacer(flex: 2),
             ],
           ),
         ),
