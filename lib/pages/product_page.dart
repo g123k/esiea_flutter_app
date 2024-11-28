@@ -12,18 +12,81 @@ class ProductPage extends StatefulWidget {
 }
 
 class _ProductPageState extends State<ProductPage> {
+  int _tabPosition = 0;
+
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: <Widget>[
-        // TODO Changer dynamique de page
-        const Expanded(
-          child: ProductPageTab0(),
-        ),
-        // TODO Ajouter la NavigationBar
-        // NavigationBar(destinations: destinations)
-      ],
+    return Scaffold(
+      body: Stack(
+        children: [
+          Positioned.fill(
+            child: Offstage(
+              offstage: _tabPosition != 0,
+              child: const ProductPageTab0(),
+            ),
+          ),
+          Positioned.fill(
+            child: Offstage(
+              offstage: _tabPosition != 1,
+              child: const ProductPageTab1(),
+            ),
+          ),
+          Positioned.fill(
+            child: Offstage(
+              offstage: _tabPosition != 2,
+              child: const ProductPageTab2(),
+            ),
+          ),
+          Positioned.fill(
+            child: Offstage(
+              offstage: _tabPosition != 3,
+              child: const ProductPageTab3(),
+            ),
+          ),
+        ],
+      ),
+      bottomNavigationBar: NavigationBar(
+        destinations: const [
+          NavigationDestination(
+            icon: Icon(AppIcons.tab_barcode),
+            label: 'Fiche',
+          ),
+          NavigationDestination(
+            icon: Icon(AppIcons.tab_fridge),
+            label: 'Caractéristiques',
+          ),
+          NavigationDestination(
+            icon: Icon(AppIcons.tab_nutrition),
+            label: 'Nutrition',
+          ),
+          NavigationDestination(
+            icon: Icon(AppIcons.tab_array),
+            label: 'Tableau',
+          ),
+        ],
+        selectedIndex: _tabPosition,
+        onDestinationSelected: (int position) {
+          setState(() {
+            _tabPosition = position;
+          });
+        },
+      ),
     );
+  }
+
+  Widget get body {
+    switch (_tabPosition) {
+      case 0:
+        return const ProductPageTab0();
+      case 1:
+        return const ProductPageTab1();
+      case 2:
+        return const ProductPageTab2();
+      case 3:
+        return const ProductPageTab3();
+      default:
+        throw Exception();
+    }
   }
 }
 
@@ -67,34 +130,36 @@ class _ProductPageTab0State extends State<ProductPageTab0> {
       },
       child: ProductContainer(
         product: generateProduct(),
-        child: Stack(children: [
-          Builder(builder: (BuildContext context) {
-            return Image.network(
-              ProductContainer.of(context).product.picture!,
-              width: double.infinity,
-              height: ProductPageTab0.kImageHeight,
-              cacheHeight: (ProductPageTab0.kImageHeight * 3).toInt(),
-              fit: BoxFit.cover,
-              color: Colors.black.withOpacity(_currentScrollProgress),
-              colorBlendMode: BlendMode.srcATop,
-            );
-          }),
-          Positioned.fill(
-            child: SingleChildScrollView(
-              controller: scrollController,
-              child: Scrollbar(
+        child: SizedBox.expand(
+          child: Stack(children: [
+            Builder(builder: (BuildContext context) {
+              return Image.network(
+                ProductContainer.of(context).product.picture!,
+                width: double.infinity,
+                height: ProductPageTab0.kImageHeight,
+                cacheHeight: (ProductPageTab0.kImageHeight * 3).toInt(),
+                fit: BoxFit.cover,
+                color: Colors.black.withOpacity(_currentScrollProgress),
+                colorBlendMode: BlendMode.srcATop,
+              );
+            }),
+            Positioned.fill(
+              child: SingleChildScrollView(
                 controller: scrollController,
-                trackVisibility: true,
-                child: Container(
-                  margin: const EdgeInsetsDirectional.only(
-                    top: ProductPageTab0.kImageHeight - 30.0,
+                child: Scrollbar(
+                  controller: scrollController,
+                  trackVisibility: true,
+                  child: Container(
+                    margin: const EdgeInsetsDirectional.only(
+                      top: ProductPageTab0.kImageHeight - 30.0,
+                    ),
+                    child: const _Body(),
                   ),
-                  child: const _Body(),
                 ),
               ),
             ),
-          ),
-        ]),
+          ]),
+        ),
       ),
     );
   }
@@ -659,7 +724,7 @@ class ProductPageTab1 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       body: Center(
         child: Text('Caractéristiques'),
       ),
@@ -672,7 +737,7 @@ class ProductPageTab2 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       body: Center(
         child: Text('Nutrition'),
       ),
@@ -685,7 +750,7 @@ class ProductPageTab3 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       body: Center(
         child: Text('Tableau'),
       ),

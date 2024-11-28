@@ -66,6 +66,9 @@ class MyApp extends StatelessWidget {
           unselectedItemColor: AppColors.gray2,
           type: BottomNavigationBarType.fixed,
         ),
+        navigationBarTheme: NavigationBarThemeData(
+          indicatorColor: AppColors.blue,
+        ),
       ),
       home: const ProductPage(),
     );
