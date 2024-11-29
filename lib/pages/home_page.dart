@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
-import 'package:untitled5/res/app_colors.dart';
+import 'package:untitled5/main.dart';
 import 'package:untitled5/res/app_icons.dart';
 import 'package:untitled5/res/app_vectorial_images.dart';
 
@@ -44,8 +44,12 @@ class Homepage extends StatelessWidget {
                   GoRouter.of(context).push('/product');
                 },
                 style: OutlinedButton.styleFrom(
-                  foregroundColor: AppColors.blue,
-                  backgroundColor: AppColors.yellow,
+                  foregroundColor: Theme.of(context)
+                      .extension<MyAppThemeExtension>()!
+                      .primaryColor,
+                  backgroundColor: Theme.of(context)
+                      .extension<MyAppThemeExtension>()!
+                      .secondaryColor,
                   shape: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(
                       Radius.circular(22.0),

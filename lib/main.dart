@@ -32,6 +32,12 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
+        extensions: [
+          MyAppThemeExtension(
+            primaryColor: AppColors.blue,
+            secondaryColor: AppColors.yellow,
+          ),
+        ],
         useMaterial3: true,
         colorScheme: const ColorScheme.light(
           primary: AppColors.blue,
@@ -87,6 +93,40 @@ class MyApp extends StatelessWidget {
         ),
       ),
       routerConfig: _router,
+    );
+  }
+}
+
+class MyAppThemeExtension extends ThemeExtension<MyAppThemeExtension> {
+  final Color primaryColor;
+  final Color secondaryColor;
+
+  MyAppThemeExtension({
+    required this.primaryColor,
+    required this.secondaryColor,
+  });
+
+  @override
+  ThemeExtension<MyAppThemeExtension> copyWith({
+    Color? primaryColor,
+    Color? secondaryColor,
+  }) {
+    return MyAppThemeExtension(
+      primaryColor: primaryColor ?? this.primaryColor,
+      secondaryColor: secondaryColor ?? this.secondaryColor,
+    );
+  }
+
+  @override
+  ThemeExtension<MyAppThemeExtension> lerp(
+      covariant ThemeExtension<MyAppThemeExtension>? other, double t) {
+    if (other is! MyAppThemeExtension) {
+      return this;
+    }
+
+    return MyAppThemeExtension(
+      primaryColor: Color.lerp(primaryColor, other.primaryColor, t)!,
+      secondaryColor: Color.lerp(secondaryColor, other.secondaryColor, t)!,
     );
   }
 }
