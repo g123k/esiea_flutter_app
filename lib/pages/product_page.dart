@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:untitled5/model/product.dart';
+import 'package:untitled5/pages/product_notifier.dart';
 import 'package:untitled5/res/app_colors.dart';
 import 'package:untitled5/res/app_icons.dart';
 import 'package:untitled5/res/app_images.dart';
@@ -16,59 +18,79 @@ class _ProductPageState extends State<ProductPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
-        children: [
-          Positioned.fill(
-            child: Offstage(
-              offstage: _tabPosition != 0,
-              child: const ProductPageTab0(),
-            ),
-          ),
-          Positioned.fill(
-            child: Offstage(
-              offstage: _tabPosition != 1,
-              child: const ProductPageTab1(),
-            ),
-          ),
-          Positioned.fill(
-            child: Offstage(
-              offstage: _tabPosition != 2,
-              child: const ProductPageTab2(),
-            ),
-          ),
-          Positioned.fill(
-            child: Offstage(
-              offstage: _tabPosition != 3,
-              child: const ProductPageTab3(),
-            ),
-          ),
-        ],
-      ),
-      bottomNavigationBar: NavigationBar(
-        destinations: const [
-          NavigationDestination(
-            icon: Icon(AppIcons.tab_barcode),
-            label: 'Fiche',
-          ),
-          NavigationDestination(
-            icon: Icon(AppIcons.tab_fridge),
-            label: 'Caractéristiques',
-          ),
-          NavigationDestination(
-            icon: Icon(AppIcons.tab_nutrition),
-            label: 'Nutrition',
-          ),
-          NavigationDestination(
-            icon: Icon(AppIcons.tab_array),
-            label: 'Tableau',
-          ),
-        ],
-        selectedIndex: _tabPosition,
-        onDestinationSelected: (int position) {
-          setState(() {
-            _tabPosition = position;
-          });
+    return ChangeNotifierProvider(
+      create: (_) => ProductNotifier('18964894894'),
+      child: Consumer<ProductNotifier>(
+        builder: (BuildContext context, ProductNotifier notifier, _) {
+          return switch (notifier.value) {
+            ProductNotifierLoadingState() => const Scaffold(
+                body: Center(
+                  child: CircularProgressIndicator.adaptive(),
+                ),
+              ),
+            ProductNotifierErrorState() => Scaffold(
+                body: Center(
+                  child:
+                      Text((notifier.value as ProductNotifierErrorState).error),
+                ),
+              ),
+            ProductNotifierSuccessState() => Scaffold(
+                body: Stack(
+                  children: [
+                    Positioned.fill(
+                      child: Offstage(
+                        offstage: _tabPosition != 0,
+                        child: const ProductPageTab0(),
+                      ),
+                    ),
+                    Positioned.fill(
+                      child: Offstage(
+                        offstage: _tabPosition != 1,
+                        child: const ProductPageTab1(),
+                      ),
+                    ),
+                    Positioned.fill(
+                      child: Offstage(
+                        offstage: _tabPosition != 2,
+                        child: const ProductPageTab2(),
+                      ),
+                    ),
+                    Positioned.fill(
+                      child: Offstage(
+                        offstage: _tabPosition != 3,
+                        child: const ProductPageTab3(),
+                      ),
+                    ),
+                  ],
+                ),
+                bottomNavigationBar: NavigationBar(
+                  destinations: const [
+                    NavigationDestination(
+                      icon: Icon(AppIcons.tab_barcode),
+                      label: 'Fiche',
+                    ),
+                    NavigationDestination(
+                      icon: Icon(AppIcons.tab_fridge),
+                      label: 'Caractéristiques',
+                    ),
+                    NavigationDestination(
+                      icon: Icon(AppIcons.tab_nutrition),
+                      label: 'Nutrition',
+                    ),
+                    NavigationDestination(
+                      icon: Icon(AppIcons.tab_array),
+                      label: 'Tableau',
+                    ),
+                  ],
+                  selectedIndex: _tabPosition,
+                  onDestinationSelected: (int position) {
+                    setState(() {
+                      _tabPosition = position;
+                    });
+                  },
+                ),
+              )
+          };
         },
       ),
     );
@@ -128,13 +150,15 @@ class _ProductPageTab0State extends State<ProductPageTab0> {
         _onScroll();
         return false;
       },
-      child: ProductContainer(
-        product: generateProduct(),
-        child: SizedBox.expand(
-          child: Stack(children: [
-            Builder(builder: (BuildContext context) {
+      child: SizedBox.expand(
+        child: Stack(
+          children: [
+            Consumer(
+                builder: (BuildContext context, ProductNotifier notifier, _) {
               return Image.network(
-                ProductContainer.of(context).product.picture!,
+                (notifier.value as ProductNotifierSuccessState)
+                    .product
+                    .picture!,
                 width: double.infinity,
                 height: ProductPageTab0.kImageHeight,
                 cacheHeight: (ProductPageTab0.kImageHeight * 3).toInt(),
@@ -158,7 +182,7 @@ class _ProductPageTab0State extends State<ProductPageTab0> {
                 ),
               ),
             ),
-          ]),
+          ],
         ),
       ),
     );
@@ -279,7 +303,9 @@ class _Header extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final TextTheme textTheme = Theme.of(context).textTheme;
-    final Product product = ProductContainer.of(context).product;
+    final Product product = (Provider.of<ProductNotifier>(context).value
+            as ProductNotifierSuccessState)
+        .product;
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -312,7 +338,9 @@ class _Scores extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Product product = ProductContainer.of(context).product;
+    final Product product = (Provider.of<ProductNotifier>(context).value
+            as ProductNotifierSuccessState)
+        .product;
 
     return Container(
       color: AppColors.gray1,
@@ -565,7 +593,9 @@ class _Info extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Product product = ProductContainer.of(context).product;
+    final Product product = (Provider.of<ProductNotifier>(context).value
+            as ProductNotifierSuccessState)
+        .product;
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -696,28 +726,6 @@ class _ProductBubble extends StatelessWidget {
 }
 
 enum _ProductBubbleValue { on, off }
-
-class ProductContainer extends InheritedWidget {
-  const ProductContainer({
-    super.key,
-    required this.product,
-    required super.child,
-  });
-
-  final Product product;
-
-  static ProductContainer of(BuildContext context) {
-    final ProductContainer? result =
-        context.dependOnInheritedWidgetOfExactType<ProductContainer>();
-    assert(result != null, 'No ProductContainer found in context');
-    return result!;
-  }
-
-  @override
-  bool updateShouldNotify(ProductContainer oldWidget) {
-    return product != oldWidget.product;
-  }
-}
 
 class ProductPageTab1 extends StatelessWidget {
   const ProductPageTab1({super.key});
