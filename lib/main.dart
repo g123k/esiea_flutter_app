@@ -1,18 +1,34 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:untitled5/pages/home_page.dart';
 import 'package:untitled5/pages/product_page.dart';
 import 'package:untitled5/res/app_colors.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  MyApp({super.key});
+
+  final GoRouter _router = GoRouter(routes: [
+    GoRoute(
+      path: '/',
+      builder: (BuildContext context, GoRouterState state) => const Homepage(),
+      routes: [
+        GoRoute(
+          path: '/product',
+          builder: (BuildContext context, GoRouterState state) =>
+              const ProductPage(),
+        ),
+      ],
+    ),
+  ]);
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
@@ -66,11 +82,11 @@ class MyApp extends StatelessWidget {
           unselectedItemColor: AppColors.gray2,
           type: BottomNavigationBarType.fixed,
         ),
-        navigationBarTheme: NavigationBarThemeData(
+        navigationBarTheme: const NavigationBarThemeData(
           indicatorColor: AppColors.blue,
         ),
       ),
-      home: const ProductPage(),
+      routerConfig: _router,
     );
   }
 }
