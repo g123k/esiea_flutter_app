@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:untitled5/model/product.dart';
-import 'package:untitled5/pages/product_notifier.dart';
+import 'package:untitled5/pages/product_bloc.dart';
 import 'package:untitled5/res/app_colors.dart';
 import 'package:untitled5/res/app_icons.dart';
 import 'package:untitled5/res/app_images.dart';
@@ -18,11 +18,11 @@ class _ProductPageState extends State<ProductPage> {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => ProductNotifier('18964894894'),
-      child: Consumer<ProductNotifier>(
-        builder: (BuildContext context, ProductNotifier notifier, _) {
-          return switch (notifier.value) {
+    return BlocProvider(
+      create: (_) => ProductBloc('18964894894'),
+      child: BlocBuilder<ProductBloc, ProductState>(
+        builder: (BuildContext context, ProductState state) {
+          return switch (state) {
             ProductNotifierLoadingState() => const Scaffold(
                 body: Center(
                   child: CircularProgressIndicator.adaptive(),
@@ -30,8 +30,7 @@ class _ProductPageState extends State<ProductPage> {
               ),
             ProductNotifierErrorState() => Scaffold(
                 body: Center(
-                  child:
-                      Text((notifier.value as ProductNotifierErrorState).error),
+                  child: Text(state.error),
                 ),
               ),
             ProductNotifierSuccessState() => Scaffold(
@@ -153,12 +152,10 @@ class _ProductPageTab0State extends State<ProductPageTab0> {
       child: SizedBox.expand(
         child: Stack(
           children: [
-            Consumer(
-                builder: (BuildContext context, ProductNotifier notifier, _) {
+            BlocBuilder<ProductBloc, ProductState>(
+                builder: (BuildContext context, ProductState state) {
               return Image.network(
-                (notifier.value as ProductNotifierSuccessState)
-                    .product
-                    .picture!,
+                (state as ProductNotifierSuccessState).product.picture!,
                 width: double.infinity,
                 height: ProductPageTab0.kImageHeight,
                 cacheHeight: (ProductPageTab0.kImageHeight * 3).toInt(),
@@ -303,7 +300,7 @@ class _Header extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final TextTheme textTheme = Theme.of(context).textTheme;
-    final Product product = (Provider.of<ProductNotifier>(context).value
+    final Product product = (BlocProvider.of<ProductBloc>(context).state
             as ProductNotifierSuccessState)
         .product;
 
@@ -338,7 +335,7 @@ class _Scores extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Product product = (Provider.of<ProductNotifier>(context).value
+    final Product product = (BlocProvider.of<ProductBloc>(context).state
             as ProductNotifierSuccessState)
         .product;
 
@@ -593,7 +590,7 @@ class _Info extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Product product = (Provider.of<ProductNotifier>(context).value
+    final Product product = (BlocProvider.of<ProductBloc>(context).state
             as ProductNotifierSuccessState)
         .product;
 
