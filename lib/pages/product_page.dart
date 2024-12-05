@@ -19,7 +19,7 @@ class _ProductPageState extends State<ProductPage> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => ProductBloc('18964894894'),
+      create: (_) => ProductBloc('5000159484695'),
       child: BlocBuilder<ProductBloc, ProductState>(
         builder: (BuildContext context, ProductState state) {
           return switch (state) {
@@ -30,7 +30,7 @@ class _ProductPageState extends State<ProductPage> {
               ),
             ProductNotifierErrorState() => Scaffold(
                 body: Center(
-                  child: Text(state.error),
+                  child: Text(state.error.toString()),
                 ),
               ),
             ProductNotifierSuccessState() => Scaffold(

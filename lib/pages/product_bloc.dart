@@ -1,4 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:untitled5/api/model/product_api.dart';
+import 'package:untitled5/api/off_api.dart';
 import 'package:untitled5/model/product.dart';
 
 abstract class ProductEvent {}
@@ -20,8 +22,9 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
     Emitter<ProductState> emit,
   ) async {
     try {
-      await Future.delayed(const Duration(seconds: 2));
-      emit(ProductNotifierSuccessState(generateProduct()));
+      final OFFServerResponse response =
+          await OFFAPIManager().loadProduct(barcode);
+      emit(ProductNotifierSuccessState(response.response.generateProduct()));
     } catch (e) {
       emit(ProductNotifierErrorState(e));
     }
