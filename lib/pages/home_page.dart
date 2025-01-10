@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
 import 'package:untitled5/main.dart';
 import 'package:untitled5/res/app_icons.dart';
 import 'package:untitled5/res/app_vectorial_images.dart';
@@ -16,7 +17,27 @@ class Homepage extends StatelessWidget {
         centerTitle: false,
         actions: [
           IconButton(
-            onPressed: () {},
+            onPressed: () async {
+              String? barcode = await SimpleBarcodeScanner.scanBarcode(
+                context,
+                barcodeAppBar: const BarcodeAppBar(
+                  appBarTitle: 'Test',
+                  centerTitle: false,
+                  enableBackButton: true,
+                  backButtonIcon: Icon(Icons.arrow_back_ios),
+                ),
+                isShowFlashIcon: true,
+                delayMillis: 2000,
+                cameraFace: CameraFace.back,
+              );
+
+              if (barcode?.isNotEmpty == true && context.mounted) {
+                GoRouter.of(context).push(
+                  '/product',
+                  extra: barcode!,
+                );
+              }
+            },
             icon: const Padding(
               padding: EdgeInsets.only(right: 8.0),
               child: Icon(AppIcons.barcode),
@@ -39,7 +60,10 @@ class Homepage extends StatelessWidget {
               const Spacer(flex: 1),
               TextButton(
                 onPressed: () {
-                  GoRouter.of(context).push('/product');
+                  GoRouter.of(context).push(
+                    '/product',
+                    extra: '5000159484695',
+                  );
                 },
                 style: OutlinedButton.styleFrom(
                   foregroundColor: Theme.of(context)

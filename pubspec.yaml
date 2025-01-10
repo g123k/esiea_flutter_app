@@ -11,13 +11,15 @@ dependencies:
   flutter:
     sdk: flutter
 
-  flutter_svg: 2.0.16
-  go_router: 14.6.1
+  flutter_svg: 2.0.17
+  go_router: 14.6.3
   provider: 6.1.2
   flutter_bloc: 8.1.6
   dio: any
   retrofit: any
   json_annotation: any
+
+  simple_barcode_scanner: 0.2.5
 
 dev_dependencies:
   flutter_test:

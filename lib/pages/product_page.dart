@@ -7,7 +7,9 @@ import 'package:untitled5/res/app_icons.dart';
 import 'package:untitled5/res/app_images.dart';
 
 class ProductPage extends StatefulWidget {
-  const ProductPage({super.key});
+  const ProductPage({super.key, required this.barcode});
+
+  final String barcode;
 
   @override
   State<ProductPage> createState() => _ProductPageState();
@@ -19,7 +21,7 @@ class _ProductPageState extends State<ProductPage> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => ProductBloc('5000159484695'),
+      create: (_) => ProductBloc(widget.barcode),
       child: BlocBuilder<ProductBloc, ProductState>(
         builder: (BuildContext context, ProductState state) {
           return switch (state) {

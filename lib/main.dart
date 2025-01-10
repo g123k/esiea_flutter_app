@@ -18,8 +18,13 @@ class MyApp extends StatelessWidget {
       routes: [
         GoRoute(
           path: '/product',
-          builder: (BuildContext context, GoRouterState state) =>
-              const ProductPage(),
+          builder: (BuildContext context, GoRouterState state) {
+            /// Avec Query ?barcode=XXX
+            /// state.uri.queryParameters['barcode']
+            return ProductPage(
+              barcode: state.extra as String,
+            );
+          },
         ),
       ],
     ),
